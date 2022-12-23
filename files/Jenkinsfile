@@ -47,6 +47,9 @@ pipeline {
         cron('* * * * *')
     }
     stages {
+        agent { 
+            label 'agent_ubuntu_prod' // or use label 'agent_1'
+        }
         stage('Checkout SCM') {
             steps {
                 script {
@@ -69,7 +72,7 @@ pipeline {
                     telegram_notification(TOKEN, CHAT_ID, build_status)
                 }
                 // remove local images if it still exists
-                sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq) || true"
+                // sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq) || true"
             }
         }
         success {
