@@ -38,12 +38,12 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent { label 'agent_ubuntu_prod' }
+    agent none
     triggers { 
         pollSCM "* * * * *"
     }
     stages {
-        
+        agent { label 'agent_ubuntu_prod' }
         stage('SCM') {
             steps {
                 script {
