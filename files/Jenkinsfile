@@ -11,9 +11,6 @@ def imageName
 def docker_image
 
 def get_build_status(status) {
-  if (status == 'RUN') {
-    return "[🕐] Start running 😴"
-  }
   if (status == 'SUCCESS') {
     return "[✅] Build successfully 😊"
   } 
