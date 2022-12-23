@@ -51,30 +51,30 @@ pipeline {
         stage('Checkout SCM') {
             agent { label 'agent_ubuntu_prod' }
             steps {
+                checkout scm
                 script { echo "This stage - '$STAGE_NAME'" }
             }
-            post {
-                always {
-                    script {
-                        echo 'Post always ...'
-                    }
-                }
-                success {
-                    echo 'Post success ...'
-                    cleanWs() // Clean after build
-                }
-                aborted {
-                    echo 'Post aborted ...'
-                    cleanWs() // Clean
-                }
-                failure {
-                    echo 'Post failure ...'
-                    script { env.FAILURE_STAGE = "$STAGE_NAME" }
-                    cleanWs() // Clean
+        }
+        post {
+            always {
+                script {
+                    echo 'Post always ...'
                 }
             }
+            success {
+                echo 'Post success ...'
+                // cleanWs() // Clean after build
+            }
+            aborted {
+                echo 'Post aborted ...'
+                // cleanWs() // Clean
+            }
+            failure {
+                echo 'Post failure ...'
+                script { env.FAILURE_STAGE = "$STAGE_NAME" }
+                // cleanWs() // Clean
+            }
         }
-        
     }
     
 }
