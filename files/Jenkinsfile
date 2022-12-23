@@ -43,8 +43,8 @@ pipeline {
         pollSCM "* * * * *"
     }
     stages {
-        agent { label 'agent_ubuntu_prod' }
         stage('SCM') {
+            agent { label 'agent_ubuntu_prod' }
             steps {
                 script {
                     echo 'Pulling...' + env.GIT_BRANCH
