@@ -44,10 +44,16 @@ pipeline {
         pollSCM "* * * * *"
     }
     stages {
-        stage('Prod stages') {
-            when {
-                branch "main"
+        stage('Get branch name') {
+            agent none
+            steps {
+                script {
+                    branch_name = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    echo ${branch_name}
+                } 
             }
+        }
+        stage('Prod stages') {
             agent { label 'agent_ubuntu_prod' }
             stages {
                 stage('SCM') {
