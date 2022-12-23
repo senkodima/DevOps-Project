@@ -38,49 +38,53 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent { label 'agent_ubuntu_prod' }
+    agent none
     triggers { 
         pollSCM "* * * * *"
     }
     stages {
-        stage('SCM') {
-            steps {
-                script {
-                    echo 'Pulling...' + env.GIT_BRANCH
-                    script { echo "This stage - '$STAGE_NAME'" }
-                } 
+        stage('Prod stages') {
+            agent { label 'agent_ubuntu_prod' }
+            stages {
+                stage('SCM') {
+                    steps {
+                        script {
+                            echo 'Pulling...' + env.GIT_BRANCH
+                            script { echo "This stage - '$STAGE_NAME'" }
+                        } 
+                    }
+                }
             }
-        }
-    }
-    post {
-        always {
-            script {
-                echo 'Post always ...'
-                withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
-                                 string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
-                    def build_status = get_build_status(currentBuild.currentResult)
-                    telegram_notification(TOKEN, CHAT_ID, build_status)
+            post {
+                always {
+                    script {
+                        echo 'Post always ...'
+                        withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
+                                        string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
+                            def build_status = get_build_status(currentBuild.currentResult)
+                            telegram_notification(TOKEN, CHAT_ID, build_status)
+                        }
+                    }
+                }
+                success {
+                    script {
+                        echo 'Post success ...'
+                        // cleanWs() // Clean after build
+                    }
+                }
+                aborted {
+                    script {
+                        echo 'Post aborted ...'
+                        // cleanWs() // Clean
+                    }
+                }
+                failure {
+                    script {
+                        echo 'Post failure ...'
+                        // cleanWs() // Clean
+                    }
                 }
             }
         }
-        success {
-            script {
-                echo 'Post success ...'
-                // cleanWs() // Clean after build
-            }
-        }
-        aborted {
-            script {
-                echo 'Post aborted ...'
-                // cleanWs() // Clean
-            }
-        }
-        failure {
-            script {
-                echo 'Post failure ...'
-                // cleanWs() // Clean
-            }
-        }
     }
-    
 }
