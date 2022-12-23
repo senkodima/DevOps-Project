@@ -42,47 +42,44 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
     }
 }
 
-
-
 pipeline {
+    agent none
     triggers { 
         cron('* * * * *')
     }
     stages {
         stage('Checkout SCM') {
-            agent { 
-                label 'agent_ubuntu_prod' // or use label 'agent_1'
-            }
+            agent { label 'agent_ubuntu_prod' }
             steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
+                script { echo "This stage - '$STAGE_NAME'" }
+            }
+            post {
+                always {
+                    script {
+                        echo 'Post always ...'
+                        withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
+                                        string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
+                            def build_status = get_build_status(currentBuild.currentResult)
+                            telegram_notification(TOKEN, CHAT_ID, build_status)
+                        }
+                    }
+                }
+                success {
+                    echo 'Post success ...'
+                    cleanWs() // Clean after build
+                }
+                aborted {
+                    echo 'Post aborted ...'
+                    cleanWs() // Clean
+                }
+                failure {
+                    echo 'Post failure ...'
+                    script { env.FAILURE_STAGE = "$STAGE_NAME" }
+                    cleanWs() // Clean
                 }
             }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
+        
     }
-    post {
-        always {
-            script {
-                echo 'Post always ...'
-                withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
-                                 string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
-                    def build_status = get_build_status(currentBuild.currentResult)
-                    telegram_notification(TOKEN, CHAT_ID, build_status)
-                }
-            }
-        }
-        success {
-            echo 'Post success ...'
-            cleanWs() // Clean after build
-        }
-        aborted {
-            echo 'Post aborted ...'
-            cleanWs() // Clean
-        }
-        failure {
-            echo 'Post failure ...'
-            cleanWs() // Clean
-        }
-    }
+    
 }
