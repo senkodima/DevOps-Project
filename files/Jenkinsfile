@@ -30,7 +30,7 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 -d chat_id=${CHAT_ID} -d parse_mode=HTML -d text="\
 <b>JOB:</b> ${env.JOB_NAME}\n\
 <b>STATUS:</b> ${build_status}\n\
-<b>BRANCH:</b> ${env.BRANCH_NAME}\n\
+<b>BRANCH:</b> ${env.GIT_BRANCH}\n\
 <b>BUILD_ID:</b> <a href=\\"${env.BUILD_URL}\\">${env.BUILD_ID}</a>\n\
 <b>DURATION:</b> ${currentBuild.durationString}"
         """)
@@ -38,13 +38,12 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent none
+    agent { label 'agent_ubuntu_prod' }
     triggers { 
         pollSCM "* * * * *"
     }
     stages {
         stage('SCM') {
-            agent { label 'agent_ubuntu_prod' }
             steps {
                 script {
                     echo 'Pulling...' + env.GIT_BRANCH
