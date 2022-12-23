@@ -57,9 +57,6 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    git branch: "$Branch", credentialsId: "$github_cred_id", url: "$github_url"
-                    git_commit = sh(label: 'Short Git Commit', returnStdout: true, 
-                                    script: 'git rev-parse --short=7 HEAD').trim()
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
@@ -74,21 +71,19 @@ pipeline {
                     def build_status = get_build_status(currentBuild.currentResult)
                     telegram_notification(TOKEN, CHAT_ID, build_status)
                 }
-                // remove local images if it still exists
-                // sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq) || true"
             }
         }
         success {
             echo 'Post success ...'
-            // cleanWs() // Clean after build
+            cleanWs() // Clean after build
         }
         aborted {
             echo 'Post aborted ...'
-            // cleanWs() // Clean
+            cleanWs() // Clean
         }
         failure {
             echo 'Post failure ...'
-            // cleanWs() // Clean
+            cleanWs() // Clean
         }
     }
 }
