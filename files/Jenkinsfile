@@ -31,7 +31,7 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 -d chat_id=${CHAT_ID} -d parse_mode=HTML -d text="\
 <b>JOB:</b> ${env.JOB_NAME}\n\
 <b>STATUS:</b> ${build_status}\n\
-<b>BRANCH:</b> ${branch_name}\n\
+<b>BRANCH:</b> ${env.GIT_BRANCH}\n\
 <b>BUILD_ID:</b> <a href=\\"${env.BUILD_URL}\\">${env.BUILD_ID}</a>\n\
 <b>DURATION:</b> ${currentBuild.durationString}"
         """)
@@ -45,13 +45,15 @@ pipeline {
     }
     stages {
         stage('Prod stages') {
+            when {
+                branch "main"
+            }
             agent { label 'agent_ubuntu_prod' }
             stages {
                 stage('SCM') {
                     steps {
                         script {
-                            branch_name = "${GIT_BRANCH.split("/")[1]}"
-                            echo "Pulling... '$branch_name'"
+                            echo "Pulling...$GIT_BRANCH"
                             script { echo "This stage - '$STAGE_NAME'" }
                         } 
                     }
