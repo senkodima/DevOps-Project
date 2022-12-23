@@ -48,10 +48,10 @@ pipeline {
         cron('* * * * *')
     }
     stages {
-        agent { 
-            label 'agent_ubuntu_prod' // or use label 'agent_1'
-        }
         stage('Checkout SCM') {
+            agent { 
+                label 'agent_ubuntu_prod' // or use label 'agent_1'
+            }
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
