@@ -12,6 +12,10 @@ def docker_image
 
 def Branch = 'main'
 
+def getGitBranchName() {
+    return scm.branches[0].name
+}
+
 def get_build_status(status) {
   if (status == 'RUN') {
     return "[🕐] Start running 😴"
@@ -43,17 +47,20 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent none
+    agent  { label 'agent_ubuntu_prod' }
     triggers { 
         cron('* * * * *')
     }
     stages {
         
         stage('Checkout SCM') {
-            agent { label 'agent_ubuntu_prod' }
             steps {
-                checkout scm
-                script { echo "This stage - '$STAGE_NAME'" }
+                script {
+                    echo 'Pulling...' + env.BRANCH_NAME
+                    echo getGitBranchName
+                    checkout scm
+                    script { echo "This stage - '$STAGE_NAME'" }
+                } 
             }
         }
         stage('Telegram notify') {
