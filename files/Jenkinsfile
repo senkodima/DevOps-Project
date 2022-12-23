@@ -55,21 +55,9 @@ pipeline {
             steps {
                 script {
                     echo 'Pulling...' + env.BRANCH_NAME
-                    echo getGitBranchName
-                    checkout scm
                     script { echo "This stage - '$STAGE_NAME'" }
                 } 
             }
-        }
-        stage('Telegram notify') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
-                                    string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
-                        telegram_notification(TOKEN, CHAT_ID, 'RUN')
-                    }
-                }
-            }   
         }
     }
     post {
