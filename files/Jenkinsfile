@@ -44,6 +44,9 @@ pipeline {
     }
     stages {
         stage('Prod stages') {
+            when {
+                branch 'origin/main'
+            }
             agent { label 'agent_ubuntu_prod' }
             stages {
                 stage('SCM') {
