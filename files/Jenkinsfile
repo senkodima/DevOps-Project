@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    git branch: "$Branch", credentialsId: "$gitlab_credId", url: "$gitlabUrl"
+                    git branch: "$Branch", credentialsId: "$github_cred_id", url: "$github_url"
                     git_commit = sh(label: 'Short Git Commit', returnStdout: true, 
                                     script: 'git rev-parse --short=7 HEAD').trim()
                 }
