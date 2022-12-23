@@ -10,8 +10,6 @@ def git_commit
 def imageName
 def docker_image
 
-def Branch = 'main'
-
 def getGitBranchName() {
     return scm.branches[0].name
 }
@@ -39,7 +37,7 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 -d chat_id=${CHAT_ID} -d parse_mode=HTML -d text="\
 <b>JOB:</b> ${env.JOB_NAME}\n\
 <b>STATUS:</b> ${build_status}\n\
-<b>BRANCH:</b> $Branch\n\
+<b>BRANCH:</b> ${env.BRANCH_NAME}\n\
 <b>BUILD_ID:</b> <a href=\\"${env.BUILD_URL}\\">${env.BUILD_ID}</a>\n\
 <b>DURATION:</b> ${currentBuild.durationString}"
         """)
@@ -47,13 +45,13 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent  { label 'agent_ubuntu_prod' }
+    agent { label 'windows' }
     triggers { 
-        cron('* * * * *')
+        pollSCM "* * * * *"
     }
     stages {
         
-        stage('Checkout SCM') {
+        stage('SCM') {
             steps {
                 script {
                     echo 'Pulling...' + env.BRANCH_NAME
@@ -64,7 +62,6 @@ pipeline {
             }
         }
         stage('Telegram notify') {
-            agent { label 'agent_ubuntu_prod' }
             steps {
                 script {
                     withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
@@ -72,10 +69,8 @@ pipeline {
                         telegram_notification(TOKEN, CHAT_ID, 'RUN')
                     }
                 }
-            }
-            
+            }   
         }
-        
     }
     post {
         always {
@@ -84,17 +79,22 @@ pipeline {
             }
         }
         success {
-            echo 'Post success ...'
-            // cleanWs() // Clean after build
+            script {
+                echo 'Post success ...'
+                // cleanWs() // Clean after build
+            }
         }
         aborted {
-            echo 'Post aborted ...'
-            // cleanWs() // Clean
+            script {
+                echo 'Post aborted ...'
+                // cleanWs() // Clean
+            }
         }
         failure {
-            echo 'Post failure ...'
-            script { env.FAILURE_STAGE = "$STAGE_NAME" }
-            // cleanWs() // Clean
+            script {
+                echo 'Post failure ...'
+                // cleanWs() // Clean
+            }
         }
     }
     
