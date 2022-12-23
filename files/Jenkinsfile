@@ -10,10 +10,6 @@ def git_commit
 def imageName
 def docker_image
 
-def getGitBranchName() {
-    return scm.branches[0].name
-}
-
 def get_build_status(status) {
   if (status == 'RUN') {
     return "[🕐] Start running 😴"
@@ -54,7 +50,7 @@ pipeline {
         stage('SCM') {
             steps {
                 script {
-                    echo 'Pulling...' + getGitBranchName
+                    echo 'Pulling...' + env.GIT_BRANCH
                     script { echo "This stage - '$STAGE_NAME'" }
                 } 
             }
