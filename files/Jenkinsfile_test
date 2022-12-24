@@ -83,17 +83,17 @@ pipeline {
                 script {
                     echo "This stage - '$STAGE_NAME'"
                     image_name = "$dockerhub_repo_name/$app_name:$git_commit"
-                    try {
-                        sh (label: 'Stop app container', script: "docker stop ${app_name}")
-                    } catch (err) {
-                        echo "No such container $app_name"
-                    }
+                    // try {
+                    //     sh (label: 'Stop app container', script: "docker stop ${app_name}")
+                    // } catch (err) {
+                    //     echo "No such container $app_name"
+                    // }
                     // or use:
                     // sh "docker stop ${app_name} || true"
                     sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
                     sh "docker inspect $image_name"
                     // remove local images
-                    sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq)"
+                    // sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq)"
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
