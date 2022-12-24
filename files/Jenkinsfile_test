@@ -7,7 +7,6 @@ def dockerhub_repo_name = 'senkodima'
 def app_name = 'flask-app'
 
 def git_commit
-def image_name
 def docker_image
 
 def get_build_status(status) {
@@ -57,7 +56,7 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    image_name = "$dockerhub_repo_name/$app_name:$git_commit"
+                    def image_name = "$dockerhub_repo_name/$app_name:$git_commit"
                     dir("files/application") {
                         // docker_image = docker.build("$image_name", "-f ./Dockerfile . ")
                         docker_image = docker.build("$image_name", 
@@ -65,7 +64,7 @@ pipeline {
                                                     "--label 'build_number=${env.BUILD_ID}' " +
                                                     "-f ./Dockerfile . ")
                         echo "$docker_image"
-                        sh "docker inspect $image_name"
+                        sh "docker inspect $docker_image"
                     }
                 }
             }
@@ -75,19 +74,7 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    try {
-                        sh (label: 'Remove app container', script: "docker rm -f ${app_name}")
-                    } catch (err) {
-                        echo "No such container $app_name"
-                    }
-
-                    sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
-                    
-                    try {
-                        sh (label: 'Remove unnecessary local images', script: "docker image prune -a -f")
-                    } catch (err) {
-                        echo "Images still in use"
-                    }
+                    sh (label: 'Run GeometryCalcWeb tests', script: "docker run --rm $docker_image \"GeometryCalcWebTest.py\"")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
@@ -102,7 +89,7 @@ pipeline {
                         echo "No such container $app_name"
                     }
 
-                    sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
+                    sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $docker_image"
                     
                     try {
                         sh (label: 'Remove unnecessary local images', script: "docker image prune -a -f")
