@@ -80,11 +80,14 @@ pipeline {
                     } catch (err) {
                         echo "No such container $app_name"
                     }
-                    // or use:
-                    // sh "docker stop ${app_name} || true"
+
                     sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
-                    // remove local images
-                    // sh "docker rmi --force \$(docker images -q ${docker_image.id} | uniq)"
+                    
+                    try {
+                        sh (label: 'Remove unnecessary local images', script: "docker image prune -a -f")
+                    } catch (err) {
+                        echo "Images still in use"
+                    }
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
