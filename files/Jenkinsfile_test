@@ -81,7 +81,7 @@ pipeline {
                 script {
                     echo "This stage - '$STAGE_NAME'"
                     for(String item: app_tests) {
-                        sh (label: 'Run test: ${item}', script: "docker run --rm $image_name $item")
+                        sh (label: "Run test: $item", script: "docker run --rm $image_name $item")
                     }
                 }
             }
