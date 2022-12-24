@@ -23,7 +23,7 @@ def get_build_status(status) {
   }
 }
 
-def telegram_notification(TOKEN, CHAT_ID, build_status) {
+def post_telegram_notification(TOKEN, CHAT_ID, build_status) {
     script {
         sh (label: 'Telegram notification', script: """ 
 curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
@@ -64,7 +64,29 @@ pipeline {
                                                     "--label 'build_name=${env.JOB_NAME}' " +
                                                     "--label 'build_number=${env.BUILD_ID}' " +
                                                     "-f ./Dockerfile . ")
+                        echo "$docker_image"
                         sh "docker inspect $image_name"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
+        stage('Run tests') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    try {
+                        sh (label: 'Remove app container', script: "docker rm -f ${app_name}")
+                    } catch (err) {
+                        echo "No such container $app_name"
+                    }
+
+                    sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
+                    
+                    try {
+                        sh (label: 'Remove unnecessary local images', script: "docker image prune -a -f")
+                    } catch (err) {
+                        echo "Images still in use"
                     }
                 }
             }
@@ -74,7 +96,6 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    image_name = "$dockerhub_repo_name/$app_name:$git_commit"
                     try {
                         sh (label: 'Remove app container', script: "docker rm -f ${app_name}")
                     } catch (err) {
@@ -100,7 +121,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'telegram_bot_token', variable: 'TOKEN'), 
                                 string(credentialsId: 'telegram_chat_id', variable: 'CHAT_ID')]) {
                     def build_status = get_build_status(currentBuild.currentResult)
-                    telegram_notification(TOKEN, CHAT_ID, build_status)
+                    post_telegram_notification(TOKEN, CHAT_ID, build_status)
                 }
                 cleanWs() // Clean after build
             }
