@@ -5,6 +5,12 @@ def dockerhub_cred_id = 'dockerhub-senkodima'
 def dockerhub_repo_name = 'senkodima'
 
 def app_name = 'flask-app'
+def app_tests = [
+    'GeometryCalcWebTest.py', 
+    'coneTest.py', 
+    'cylinderTest.py',
+    'sphereTest.py'
+]
 
 def git_commit
 def image_name
@@ -74,7 +80,9 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    sh (label: 'Run GeometryCalcWeb tests', script: "docker run --rm $image_name GeometryCalcWebTest.py")
+                    for(String item: app_tests) {
+                        sh (label: 'Run test: ${item}', script: "docker run --rm $image_name $item")
+                    }
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
