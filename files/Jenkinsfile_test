@@ -74,7 +74,7 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    sh (label: 'Run GeometryCalcWeb tests', script: "docker run --rm $image_name \"GeometryCalcWebTest.py\"")
+                    sh (label: 'Run GeometryCalcWeb tests', script: "docker run --rm $image_name GeometryCalcWebTest.py")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
