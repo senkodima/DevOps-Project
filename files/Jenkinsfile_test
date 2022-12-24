@@ -66,19 +66,19 @@ pipeline {
         success {
             script {
                 echo 'Post success ...'
-                cleanWs() // Clean after build
+                // cleanWs() // Clean after build
             }
         }
         aborted {
             script {
                 echo 'Post aborted ...'
-                cleanWs() // Clean
+                // cleanWs() // Clean
             }
         }
         failure {
             script {
                 echo 'Post failure ...'
-                cleanWs() // Clean
+                // cleanWs() // Clean
             }
         }
     }
