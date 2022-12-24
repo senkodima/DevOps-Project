@@ -102,6 +102,7 @@ pipeline {
                     def build_status = get_build_status(currentBuild.currentResult)
                     telegram_notification(TOKEN, CHAT_ID, build_status)
                 }
+                cleanWs() // Clean after build
             }
         }
         success {
