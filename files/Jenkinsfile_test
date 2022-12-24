@@ -76,7 +76,7 @@ pipeline {
                     echo "This stage - '$STAGE_NAME'"
                     image_name = "$dockerhub_repo_name/$app_name:$git_commit"
                     try {
-                        sh (label: 'Stop app container', script: "docker stop ${app_name}")
+                        sh (label: 'Remove app container', script: "docker rm -f ${app_name}")
                     } catch (err) {
                         echo "No such container $app_name"
                     }
