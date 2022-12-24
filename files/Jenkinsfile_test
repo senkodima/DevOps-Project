@@ -51,6 +51,34 @@ pipeline {
                 }
             }
         }
+        stage('Checkout SCM') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    git_commit = sh(label: 'Short Git Commit', returnStdout: true, 
+                                    script: 'git rev-parse --short=7 HEAD').trim()
+                    echo "$git_commit"
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
+        // stage('Build Dockerfile') {
+        //     steps {
+        //         script {
+        //             echo "This stage - '$STAGE_NAME'"
+        //             imageName = "$dockerhub_repo_name/$app_name:$git_commit"
+        //             dir("$Folder/files") {
+        //                 // docker_image = docker.build("$imageName", "-f ./Dockerfile . ")
+        //                 docker_image = docker.build("$imageName", 
+        //                                             "--label 'build_name=${env.JOB_NAME}' " +
+        //                                             "--label 'build_number=${env.BUILD_ID}' " +
+        //                                             "-f ./Dockerfile . ")
+        //                 sh "docker inspect $imageName"
+        //             }
+        //         }
+        //     }
+        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        // }
     }
     post {
         always {
