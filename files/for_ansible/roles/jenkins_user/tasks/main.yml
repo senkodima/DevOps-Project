@@ -1,0 +1,16 @@
+---
+- name: Main | Add user - {{ user }}
+  ansible.builtin.user:
+    name: "{{ user }}"
+    password: "{{ password | password_hash('sha512') }}"
+    update_password: on_create
+    shell: /bin/bash
+    state: present
+
+- name: Main | Create directory '/home/jenkins/jenkins_slave'
+  ansible.builtin.file:
+    path: /home/jenkins/jenkins_slave
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: "0775"

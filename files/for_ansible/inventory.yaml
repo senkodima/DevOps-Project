@@ -1,0 +1,17 @@
+all:
+  children:
+    internal_hosts:
+      children:
+        environment:
+          hosts:
+            ubuntu_prod:
+              ansible_host: 192.168.100.50
+              ansible_user: vagrant
+            ubuntu_test:
+              ansible_host: 192.168.100.51
+              ansible_user: vagrant
+    local:
+      hosts:
+        localhost:
+          ansible_connection: local
+    ungrouped: {}

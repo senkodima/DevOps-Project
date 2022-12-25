@@ -1,0 +1,45 @@
+---
+- name: Run full playbook
+  hosts: environment
+  become: true
+  tasks:
+    - name: Playbook error handling
+      block:
+
+        - name: Start running Telegram notify
+          ansible.builtin.include_role:
+            name: telegram_notification
+          vars:
+            status: run
+
+        - name: Install Java
+          ansible.builtin.include_role:
+            name: install_java
+
+        - name: Create jenkins user
+          ansible.builtin.include_role:
+            name: jenkins_user
+
+        - name: Install Docker
+          ansible.builtin.include_role:
+            name: install_docker
+
+        - name: Install common packages
+          ansible.builtin.include_role:
+            name: common
+
+        # - name: Force raise a failure
+        #   ansible.builtin.command: /bin/false
+
+        - name: Success Telegram notify
+          ansible.builtin.include_role:
+            name: telegram_notification
+          vars:
+            status: success
+
+      rescue:
+        - name: Failure Telegram notify
+          ansible.builtin.include_role:
+            name: telegram_notification
+          vars:
+            status: failure

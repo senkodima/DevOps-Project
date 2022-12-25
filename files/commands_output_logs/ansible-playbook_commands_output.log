@@ -1,0 +1,272 @@
+
+PLAY [Run full playbook] *******************************************************
+
+TASK [Gathering Facts] *********************************************************
+Monday 26 December 2022  00:10:00 +0300 (0:00:00.075)       0:00:00.075 ******* 
+ok: [ubuntu_test]
+ok: [ubuntu_prod]
+
+TASK [Start running Telegram notify] *******************************************
+Monday 26 December 2022  00:10:05 +0300 (0:00:05.538)       0:00:05.614 ******* 
+
+TASK [telegram_notification : Main | Telegram notify send run] *****************
+Monday 26 December 2022  00:10:06 +0300 (0:00:00.109)       0:00:05.724 ******* 
+changed: [ubuntu_prod]
+changed: [ubuntu_test]
+
+TASK [Install Java] ************************************************************
+Monday 26 December 2022  00:10:09 +0300 (0:00:03.708)       0:00:09.432 ******* 
+
+TASK [install_java : Main | Install Java package (Ubuntu/Debian)] **************
+Monday 26 December 2022  00:10:09 +0300 (0:00:00.081)       0:00:09.514 ******* 
+changed: [ubuntu_prod]
+changed: [ubuntu_test]
+
+TASK [install_java : Main | Install Java package (CentOS/RHEL)] ****************
+Monday 26 December 2022  00:11:59 +0300 (0:01:49.382)       0:01:58.897 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [Create jenkins user] *****************************************************
+Monday 26 December 2022  00:11:59 +0300 (0:00:00.077)       0:01:58.975 ******* 
+
+TASK [jenkins_user : Main | Add user - jenkins] ********************************
+Monday 26 December 2022  00:11:59 +0300 (0:00:00.099)       0:01:59.074 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [jenkins_user : Main | Create directory '/home/jenkins/jenkins_slave'] ****
+Monday 26 December 2022  00:12:03 +0300 (0:00:03.579)       0:02:02.653 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [Install Docker] **********************************************************
+Monday 26 December 2022  00:12:05 +0300 (0:00:02.681)       0:02:05.335 ******* 
+
+TASK [install_docker : Main | Load OS-specific vars.] **************************
+Monday 26 December 2022  00:12:05 +0300 (0:00:00.091)       0:02:05.426 ******* 
+ok: [ubuntu_prod]
+ok: [ubuntu_test]
+
+TASK [install_docker : Main | Run RedHat tasks] ********************************
+Monday 26 December 2022  00:12:05 +0300 (0:00:00.055)       0:02:05.481 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Run Debian tasks] ********************************
+Monday 26 December 2022  00:12:05 +0300 (0:00:00.041)       0:02:05.523 ******* 
+included: /Users/senko/Downloads/TeachMeSkills DevOps/gitlab/DevOps-Project/files/for_ansible/roles/install_docker/tasks/setup-Debian.yml for ubuntu_prod, ubuntu_test
+
+TASK [install_docker : setup-Debian | Ensure old versions of Docker are not installed.] ***
+Monday 26 December 2022  00:12:05 +0300 (0:00:00.072)       0:02:05.595 ******* 
+ok: [ubuntu_test]
+ok: [ubuntu_prod]
+
+TASK [install_docker : setup-Debian | Ensure dependencies are installed.] ******
+Monday 26 December 2022  00:12:09 +0300 (0:00:03.195)       0:02:08.790 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [install_docker : setup-Debian | Ensure additional dependencies are installed (on Ubuntu < 20.04 and any other systems).] ***
+Monday 26 December 2022  00:12:16 +0300 (0:00:07.635)       0:02:16.425 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : setup-Debian | Ensure additional dependencies are installed (on Ubuntu >= 20.04).] ***
+Monday 26 December 2022  00:12:16 +0300 (0:00:00.052)       0:02:16.478 ******* 
+ok: [ubuntu_test]
+ok: [ubuntu_prod]
+
+TASK [install_docker : setup-Debian | Add Docker apt key.] *********************
+Monday 26 December 2022  00:12:19 +0300 (0:00:02.400)       0:02:18.879 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [install_docker : setup-Debian | Ensure curl is present (on older systems without SNI).] ***
+Monday 26 December 2022  00:12:21 +0300 (0:00:02.192)       0:02:21.072 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : setup-Debian | Add Docker apt key (alternative for older systems without SNI).] ***
+Monday 26 December 2022  00:12:21 +0300 (0:00:00.055)       0:02:21.128 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : setup-Debian | Add Docker repository.] ******************
+Monday 26 December 2022  00:12:21 +0300 (0:00:00.046)       0:02:21.174 ******* 
+changed: [ubuntu_prod]
+changed: [ubuntu_test]
+
+TASK [install_docker : Main | Install Docker packages.] ************************
+Monday 26 December 2022  00:12:39 +0300 (0:00:18.234)       0:02:39.409 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Install Docker packages (with downgrade option).] ***
+Monday 26 December 2022  00:12:39 +0300 (0:00:00.060)       0:02:39.470 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [install_docker : Main | Install docker-compose plugin.] ******************
+Monday 26 December 2022  00:13:28 +0300 (0:00:48.218)       0:03:27.689 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Install docker-compose-plugin (with downgrade option).] ***
+Monday 26 December 2022  00:13:28 +0300 (0:00:00.084)       0:03:27.774 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Ensure /etc/docker/ directory exists.] ***********
+Monday 26 December 2022  00:13:28 +0300 (0:00:00.084)       0:03:27.858 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Configure Docker daemon options.] ****************
+Monday 26 December 2022  00:13:28 +0300 (0:00:00.091)       0:03:27.949 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Main | Ensure Docker is started and enabled at boot.] ***
+Monday 26 December 2022  00:13:28 +0300 (0:00:00.093)       0:03:28.043 ******* 
+ok: [ubuntu_test]
+ok: [ubuntu_prod]
+
+TASK [install_docker : Main | Ensure handlers are notified now to avoid firewall conflicts.] ***
+Monday 26 December 2022  00:13:35 +0300 (0:00:06.675)       0:03:34.718 ******* 
+
+RUNNING HANDLER [install_docker : Restart docker] ******************************
+Monday 26 December 2022  00:13:35 +0300 (0:00:00.000)       0:03:34.719 ******* 
+changed: [ubuntu_prod]
+changed: [ubuntu_test]
+
+TASK [install_docker : Main | Run docker compose tasks] ************************
+Monday 26 December 2022  00:13:38 +0300 (0:00:03.514)       0:03:38.234 ******* 
+included: /Users/senko/Downloads/TeachMeSkills DevOps/gitlab/DevOps-Project/files/for_ansible/roles/install_docker/tasks/docker-comp.yml for ubuntu_prod, ubuntu_test
+
+TASK [install_docker : Docker-compose | Check current docker-compose version.] ***
+Monday 26 December 2022  00:13:38 +0300 (0:00:00.110)       0:03:38.344 ******* 
+ok: [ubuntu_prod]
+ok: [ubuntu_test]
+
+TASK [install_docker : Docker-compose | Set Fact] ******************************
+Monday 26 December 2022  00:13:40 +0300 (0:00:01.698)       0:03:40.043 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Docker-compose | Delete existing docker-compose version if it's different.] ***
+Monday 26 December 2022  00:13:40 +0300 (0:00:00.071)       0:03:40.114 ******* 
+skipping: [ubuntu_prod]
+skipping: [ubuntu_test]
+
+TASK [install_docker : Docker-compose | Install Docker Compose (if configured).] ***
+Monday 26 December 2022  00:13:40 +0300 (0:00:00.072)       0:03:40.187 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+TASK [install_docker : Main | Get docker group info using getent.] *************
+Monday 26 December 2022  00:13:57 +0300 (0:00:16.681)       0:03:56.869 ******* 
+ok: [ubuntu_prod]
+ok: [ubuntu_test]
+
+TASK [install_docker : Main | Check if there are any users to add to the docker group.] ***
+Monday 26 December 2022  00:14:00 +0300 (0:00:03.221)       0:04:00.090 ******* 
+ok: [ubuntu_prod] => (item=vagrant)
+ok: [ubuntu_prod] => (item=jenkins)
+ok: [ubuntu_test] => (item=vagrant)
+ok: [ubuntu_test] => (item=jenkins)
+
+TASK [install_docker : Main | Run docker-users tasks] **************************
+Monday 26 December 2022  00:14:00 +0300 (0:00:00.202)       0:04:00.293 ******* 
+included: /Users/senko/Downloads/TeachMeSkills DevOps/gitlab/DevOps-Project/files/for_ansible/roles/install_docker/tasks/docker-users.yml for ubuntu_prod, ubuntu_test
+
+TASK [install_docker : Docker-users | Ensure docker users are added to the docker group.] ***
+Monday 26 December 2022  00:14:00 +0300 (0:00:00.131)       0:04:00.424 ******* 
+changed: [ubuntu_prod] => (item=vagrant)
+changed: [ubuntu_test] => (item=vagrant)
+changed: [ubuntu_prod] => (item=jenkins)
+changed: [ubuntu_test] => (item=jenkins)
+
+TASK [install_docker : Docker-users | Reset ssh connection to apply user changes.] ***
+Monday 26 December 2022  00:14:06 +0300 (0:00:05.599)       0:04:06.023 ******* 
+
+TASK [install_docker : Docker-users | Reset ssh connection to apply user changes.] ***
+Monday 26 December 2022  00:14:06 +0300 (0:00:00.035)       0:04:06.059 ******* 
+
+TASK [Install common packages] *************************************************
+Monday 26 December 2022  00:14:06 +0300 (0:00:00.052)       0:04:06.111 ******* 
+
+TASK [common : Main | Installing common packages for all systems] **************
+Monday 26 December 2022  00:14:06 +0300 (0:00:00.117)       0:04:06.228 ******* 
+changed: [ubuntu_prod] => (item=tree)
+changed: [ubuntu_test] => (item=tree)
+
+TASK [common : Main | Check if a system reboot is needed after updates] ********
+Monday 26 December 2022  00:14:21 +0300 (0:00:15.344)       0:04:21.573 ******* 
+included: /Users/senko/Downloads/TeachMeSkills DevOps/gitlab/DevOps-Project/files/for_ansible/roles/common/tasks/reboot_check.yaml for ubuntu_prod, ubuntu_test
+
+TASK [common : Reboot_check | Check if a system reboot is needed on all servers] ***
+Monday 26 December 2022  00:14:22 +0300 (0:00:00.074)       0:04:21.647 ******* 
+ok: [ubuntu_test]
+ok: [ubuntu_prod]
+
+TASK [common : Reboot_check | Reboot the system if kernel updated] *************
+Monday 26 December 2022  00:14:24 +0300 (0:00:02.355)       0:04:24.003 ******* 
+ok: [ubuntu_prod] => {
+    "msg": "Reboot required : False"
+}
+ok: [ubuntu_test] => {
+    "msg": "Reboot required : False"
+}
+
+TASK [Success Telegram notify] *************************************************
+Monday 26 December 2022  00:14:24 +0300 (0:00:00.076)       0:04:24.079 ******* 
+
+TASK [telegram_notification : Main | Telegram notify send success] *************
+Monday 26 December 2022  00:14:24 +0300 (0:00:00.113)       0:04:24.192 ******* 
+changed: [ubuntu_test]
+changed: [ubuntu_prod]
+
+PLAY RECAP *********************************************************************
+ubuntu_prod                : ok=27   changed=13   unreachable=0    failed=0    skipped=12   rescued=0    ignored=0   
+ubuntu_test                : ok=27   changed=13   unreachable=0    failed=0    skipped=12   rescued=0    ignored=0   
+
+Monday 26 December 2022  00:14:27 +0300 (0:00:02.461)       0:04:26.654 ******* 
+=============================================================================== 
+install_java : Main | Install Java package (Ubuntu/Debian) ------------ 109.38s
+install_docker : Main | Install Docker packages (with downgrade option). -- 48.22s
+install_docker : setup-Debian | Add Docker repository. ----------------- 18.24s
+install_docker : Docker-compose | Install Docker Compose (if configured). -- 16.68s
+common : Main | Installing common packages for all systems ------------- 15.34s
+install_docker : setup-Debian | Ensure dependencies are installed. ------ 7.64s
+install_docker : Main | Ensure Docker is started and enabled at boot. --- 6.68s
+install_docker : Docker-users | Ensure docker users are added to the docker group. --- 5.60s
+Gathering Facts --------------------------------------------------------- 5.54s
+telegram_notification : Main | Telegram notify send run ----------------- 3.71s
+jenkins_user : Main | Add user - jenkins -------------------------------- 3.58s
+install_docker : Restart docker ----------------------------------------- 3.51s
+install_docker : Main | Get docker group info using getent. ------------- 3.22s
+install_docker : setup-Debian | Ensure old versions of Docker are not installed. --- 3.20s
+jenkins_user : Main | Create directory '/home/jenkins/jenkins_slave' ---- 2.68s
+telegram_notification : Main | Telegram notify send success ------------- 2.46s
+install_docker : setup-Debian | Ensure additional dependencies are installed (on Ubuntu >= 20.04). --- 2.40s
+common : Reboot_check | Check if a system reboot is needed on all servers --- 2.36s
+install_docker : setup-Debian | Add Docker apt key. --------------------- 2.19s
+install_docker : Docker-compose | Check current docker-compose version. --- 1.70s
+Playbook run took 0 days, 0 hours, 4 minutes, 26 seconds
+
+PLAY [Add inventory host names to '/etc/hosts' on localhost] *******************
+
+TASK [Add IP address of all inventory ansible_hosts] ***************************
+Monday 26 December 2022  00:14:28 +0300 (0:00:00.020)       0:00:00.020 ******* 
+skipping: [localhost] => (item=localhost) 
+ok: [localhost] => (item=ubuntu_prod)
+ok: [localhost] => (item=ubuntu_test)
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+Monday 26 December 2022  00:14:37 +0300 (0:00:09.784)       0:00:09.805 ******* 
+=============================================================================== 
+Add IP address of all inventory ansible_hosts --------------------------- 9.78s
+Playbook run took 0 days, 0 hours, 0 minutes, 9 seconds

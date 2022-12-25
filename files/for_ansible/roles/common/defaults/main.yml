@@ -1,0 +1,6 @@
+---
+# defaults file for common
+
+## DEFAULT packages for install on ALL SYSTEMS
+default_packages:
+  - tree

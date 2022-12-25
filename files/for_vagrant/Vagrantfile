@@ -1,0 +1,71 @@
+# encoding: utf-8
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+current_dir = File.dirname(File.expand_path(__FILE__))
+configs     = YAML.load_file("#{current_dir}/vagrant_config.yaml")
+vg_config   = configs['machines']
+
+PUB_KEY_PATH = "~/.ssh/id_rsa.pub"
+GUEST_TEMP_KEY = "/tmp/pub_key.pub"
+
+bridge_name  = vg_config['bridge_name']
+network_type = vg_config['network_type']
+
+timezone = vg_config['timezone']
+
+# Get machine names from config file, like 'ubuntu_prod', 'ubuntu_test', ...
+instance_names = []
+vg_config.each do |k,v|
+    if v.is_a?(Hash) && v.has_key?('ip')
+        instance_names << k
+    end
+end
+
+nodes = []
+instance_names.each do |i|
+    # Get string 'HW-{HW_number}-Ubuntu-...'
+    hostname = vg_config[i]['hostname'] 
+    # Replace '{HW_number}' to HW_number value
+    hostname["{HW_number}"]= vg_config['HW_number'].to_s # .to_s - convert to string 
+   
+    nodes << {
+        :ip => vg_config[i]['ip'],
+        :vagrant_name => vg_config[i]['vagrant_name'],
+        :box => vg_config[i]['box'],
+        :hostname => hostname,
+        :mem => vg_config[i]['mem'],
+        :cpu => vg_config[i]['cpu']
+    }
+end
+
+Vagrant.configure("2") do |config|
+    nodes.each do |node|
+        config.vm.define node[:vagrant_name] do |machine|
+            machine.vm.box = node[:box]
+            machine.vm.hostname = node[:hostname]
+            machine.vm.network network_type, bridge: bridge_name, ip: node[:ip]
+            machine.vm.provider "virtualbox" do |vb|
+                vb.name = node[:hostname]
+                vb.memory = node[:mem]
+                vb.cpus = node[:cpu]
+            end
+        end
+        
+        # first run the command on host: vagrant plugin install vagrant-timezone
+        # Set timezome
+        if Vagrant.has_plugin?("vagrant-timezone") 
+            config.timezone.value = timezone
+        end
+        
+        # Add ssh host public key to guest machines
+        config.vm.provision "Copy ssh host public key to guest host", type: "file", 
+            source: PUB_KEY_PATH, destination: GUEST_TEMP_KEY
+        config.vm.provision "Add host ssh public key to guest authorized keys", type: "shell", 
+            inline: <<-SHELL
+                cat #{GUEST_TEMP_KEY} >> /home/vagrant/.ssh/authorized_keys
+            SHELL
+    end
+end

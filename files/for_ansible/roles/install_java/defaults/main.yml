@@ -1,0 +1,10 @@
+---
+# java_apt_package: openjdk-8-jdk
+java_apt_package: openjdk-11-jdk
+# java_apt_package: openjdk-13-jdk
+# java_apt_package: openjdk-16-jdk
+# java_apt_package: openjdk-17-jdk
+
+# java_yum_package: java-1.8.0-openjdk
+java_yum_package: java-11-openjdk
+# java_yum_package: java-17-openjdk
