@@ -1,6 +1,3 @@
-def github_cred_id = 'Github-senkodima'
-def github_url = 'git@github.com:senkodima/DevOps-Project.git'
-
 def dockerhub_cred_id = 'dockerhub-senkodima'
 def dockerhub_repo_name = 'senkodima'
 
