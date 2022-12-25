@@ -84,7 +84,7 @@ pipeline {
                         echo "No such container $app_name"
                     }
                     sh (label: "Run container", 
-                        script: "docker run -dit --name ${app_name} -p 80:5000 --restart unless-stopped ${image_name}")
+                        script: "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
