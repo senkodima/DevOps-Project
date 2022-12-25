@@ -107,20 +107,20 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        // stage('Remove unnecessary local images') {
-        //     steps {
-        //         script {
-        //             echo "This stage - '$STAGE_NAME'"
-        //             try {
-        //                 sh (label: "Remove unnecessary local images", 
-        //                     script: "docker image prune -a -f")
-        //             } catch (err) {
-        //                 echo "Images still in use"
-        //             }
-        //         }
-        //     }
-        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        // }
+        stage('Remove unnecessary local images') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    try {
+                        sh (label: "Remove unnecessary local images", 
+                            script: "docker image prune -a -f")
+                    } catch (err) {
+                        echo "Images still in use"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
         stage('Push docker image') {
             steps {
                 script {
