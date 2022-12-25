@@ -73,6 +73,22 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
+        stage('Run container') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    try {
+                        sh (label: "Remove app container", 
+                            script: "docker rm -f ${app_name}")
+                    } catch (err) {
+                        echo "No such container $app_name"
+                    }
+                    sh (label: "Run container", 
+                        script: "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name")
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
         stage('Run tests') {
             steps {
                 script {
@@ -92,22 +108,6 @@ pipeline {
                         docker_image.push()         // push with tag short sha commit
                         docker_image.push('latest') // push with tag 'latest' 
                     }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
-        stage('Run container') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    try {
-                        sh (label: "Remove app container", 
-                            script: "docker rm -f ${app_name}")
-                    } catch (err) {
-                        echo "No such container $app_name"
-                    }
-                    sh (label: "Run container", 
-                        script: "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
