@@ -73,18 +73,6 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        stage('Run tests') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    for(String item: app_tests) {
-                        sh (label: "Run test: $item", 
-                            script: "docker run --rm $image_name $item")
-                    }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
         stage('Run container') {
             steps {
                 script {
@@ -101,13 +89,13 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        stage('Push docker image') {
+        stage('Run tests') {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    docker.withRegistry('', "$dockerhub_cred_id") {
-                        docker_image.push()         // push with tag short sha commit
-                        docker_image.push('latest') // push with tag 'latest' 
+                    for(String item: app_tests) {
+                        sh (label: "Run test: $item", 
+                            script: "docker run --rm $image_name $item")
                     }
                 }
             }
@@ -122,6 +110,18 @@ pipeline {
                             script: "docker image prune -a -f")
                     } catch (err) {
                         echo "Images still in use"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
+        stage('Push docker image') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    docker.withRegistry('', "$dockerhub_cred_id") {
+                        docker_image.push()         // push with tag short sha commit
+                        docker_image.push('latest') // push with tag 'latest' 
                     }
                 }
             }
