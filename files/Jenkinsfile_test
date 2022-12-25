@@ -56,6 +56,34 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
+        stage('Remove old containers and images') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    try {
+                        sh (label: "Remove app container", 
+                            script: "docker rm -f ${app_name}")
+                    } catch (err) {
+                        echo "No such container $app_name"
+                    }
+
+                    try {
+                        sh (label: "Remove unnecessary containers", 
+                            script: "docker container prune -f")
+                    } catch (err) {
+                        echo "Containers still in use"
+                    }
+                    
+                    try {
+                        sh (label: "Remove unnecessary local images", 
+                            script: "docker image prune -a -f")
+                    } catch (err) {
+                        echo "Images still in use"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
         stage('Build Dockerfile') {
             steps {
                 script {
@@ -89,32 +117,32 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    try {
-                        sh (label: "Remove app container", 
-                            script: "docker rm -f ${app_name}")
-                    } catch (err) {
-                        echo "No such container $app_name"
-                    }
+                    // try {
+                    //     sh (label: "Remove app container", 
+                    //         script: "docker rm -f ${app_name}")
+                    // } catch (err) {
+                    //     echo "No such container $app_name"
+                    // }
                     sh (label: "Run container", 
                         script: "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        stage('Remove unnecessary local images') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    try {
-                        sh (label: "Remove unnecessary local images", 
-                            script: "docker image prune -a -f")
-                    } catch (err) {
-                        echo "Images still in use"
-                    }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
+        // stage('Remove unnecessary local images') {
+        //     steps {
+        //         script {
+        //             echo "This stage - '$STAGE_NAME'"
+        //             try {
+        //                 sh (label: "Remove unnecessary local images", 
+        //                     script: "docker image prune -a -f")
+        //             } catch (err) {
+        //                 echo "Images still in use"
+        //             }
+        //         }
+        //     }
+        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        // }
         stage('Push docker image') {
             steps {
                 script {
