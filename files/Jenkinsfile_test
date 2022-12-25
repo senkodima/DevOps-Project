@@ -101,18 +101,6 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        stage('Push docker image') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    docker.withRegistry('', "$dockerhub_cred_id") {
-                        docker_image.push()         // push with tag short sha commit
-                        docker_image.push('latest') // push with tag 'latest' 
-                    }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
         stage('Remove unnecessary local images') {
             steps {
                 script {
@@ -122,6 +110,18 @@ pipeline {
                             script: "docker image prune -a -f")
                     } catch (err) {
                         echo "Images still in use"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
+        stage('Push docker image') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    docker.withRegistry('', "$dockerhub_cred_id") {
+                        docker_image.push()         // push with tag short sha commit
+                        docker_image.push('latest') // push with tag 'latest' 
                     }
                 }
             }
