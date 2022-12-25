@@ -31,7 +31,7 @@ def get_build_status(status) {
 
 def post_telegram_notification(TOKEN, CHAT_ID, build_status) {
     script {
-        sh (label: 'Telegram notification', script: """ 
+        sh (label: "Telegram notification", script: """ 
 curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 -d chat_id=${CHAT_ID} -d parse_mode=HTML -d text="\
 <b>JOB:</b> ${env.JOB_NAME}\n\
@@ -44,7 +44,7 @@ curl -s -X POST https://api.telegram.org/bot${TOKEN}/sendMessage \
 }
 
 pipeline {
-    agent { label 'agent_ubuntu_test' }
+    agent { label "agent_ubuntu_test" }
     triggers { 
         pollSCM "* * * * *"
     }
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     echo "This stage - '$STAGE_NAME'"
-                    git_commit = sh(label: 'Short Git Commit', returnStdout: true, 
+                    git_commit = sh(label: "Short Git Commit", returnStdout: true, 
                                     script: 'git rev-parse --short=7 HEAD').trim()
                 }
             }
@@ -92,7 +92,7 @@ pipeline {
                 script {
                     echo "This stage - '$STAGE_NAME'"
                     try {
-                        sh (label: 'Remove app container', script: "docker rm -f ${app_name}")
+                        sh (label: "Remove app container", script: "docker rm -f ${app_name}")
                     } catch (err) {
                         echo "No such container $app_name"
                     }
@@ -100,9 +100,21 @@ pipeline {
                     sh "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name"
                     
                     try {
-                        sh (label: 'Remove unnecessary local images', script: "docker image prune -a -f")
+                        sh (label: "Remove unnecessary local images", script: "docker image prune -a -f")
                     } catch (err) {
                         echo "Images still in use"
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
+        stage('Push docker image to Docker Hub') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    docker.withRegistry('', "$dockerhub_credId") {
+                        docker_image.push()         // push with tag short sha commit
+                        docker_image.push('latest') // push with tag 'latest' 
                     }
                 }
             }
