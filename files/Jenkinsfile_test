@@ -89,17 +89,18 @@ pipeline {
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        // stage('Run tests') {
-        //     steps {
-        //         script {
-        //             echo "This stage - '$STAGE_NAME'"
-        //             for(String item: app_tests) {
-        //                 sh (label: "Run test: $item", script: "docker run --rm $image_name $item")
-        //             }
-        //         }
-        //     }
-        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        // }
+        stage('Run tests') {
+            steps {
+                script {
+                    echo "This stage - '$STAGE_NAME'"
+                    for(String item: app_tests) {
+                        sh (label: "Run test: $item", 
+                            script: "docker run --rm $image_name $item")
+                    }
+                }
+            }
+            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        }
         stage('Push docker image') {
             steps {
                 script {
