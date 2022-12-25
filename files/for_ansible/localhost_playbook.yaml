@@ -1,0 +1,14 @@
+---
+- name: Add inventory host names to '/etc/hosts' on localhost
+  gather_facts: false
+  become: true
+  hosts: localhost
+  tasks:
+    - name: Add IP address of all inventory ansible_hosts
+      ansible.builtin.lineinfile:
+        dest: /etc/hosts
+        regexp: '.*{{ item }}.local$'
+        line: "{{ hostvars[item].ansible_host }} {{ item }}.local"
+        state: present
+      when: hostvars[item].ansible_host is defined
+      loop: "{{ groups.all }}"

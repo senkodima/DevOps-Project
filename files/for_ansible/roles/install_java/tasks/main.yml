@@ -1,0 +1,14 @@
+---
+- name: Main | Install Java package (Ubuntu/Debian)
+  ansible.builtin.apt:
+    name: "{{ java_apt_package }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Main | Install Java package (CentOS/RHEL)
+  ansible.builtin.yum:
+    name: "{{ java_yum_package }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'RedHat'

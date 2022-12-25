@@ -1,0 +1,14 @@
+---
+# tasks file for common
+
+- name: Main | Installing common packages for all systems
+  become: true
+  ansible.builtin.package:
+    name: "{{ temp_item }}"
+    state: present
+  loop: "{{ default_packages if default_packages is iterable else [] }}"
+  loop_control:
+    loop_var: temp_item
+
+- name: Main | Check if a system reboot is needed after updates
+  ansible.builtin.include_tasks: reboot_check.yaml

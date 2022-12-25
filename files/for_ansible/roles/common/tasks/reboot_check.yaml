@@ -1,0 +1,12 @@
+---
+- name: Reboot_check | Check if a system reboot is needed on all servers
+  register: reboot_required_file
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+
+- name: Reboot_check | Reboot the system if kernel updated
+  ansible.builtin.debug:
+    msg: "Reboot required : {{ reboot_required_file.stat.exists }}"
+  changed_when: reboot_required_file.stat.exists
+  notify:
+    - Reboot system

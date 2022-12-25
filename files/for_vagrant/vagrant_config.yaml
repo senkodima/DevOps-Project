@@ -1,0 +1,22 @@
+machines:
+  HW_number: Final
+
+  timezone: "Europe/Minsk"
+  bridge_name: "en0: Wi-Fi"
+  network_type: "public_network"
+
+  ubuntu_prod:
+    ip: "192.168.100.50"
+    vagrant_name: "ubuntu_prod"
+    box: "generic/ubuntu2004"
+    hostname: "HW-{HW_number}-Ubuntu-Prod"
+    mem: 512
+    cpu: 1
+
+  ubuntu_test:
+    ip: "192.168.100.51"
+    vagrant_name: "ubuntu_test"
+    box: "generic/ubuntu2004"
+    hostname: "HW-{HW_number}-Ubuntu-Test"
+    mem: 512
+    cpu: 1

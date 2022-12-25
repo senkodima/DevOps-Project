@@ -1,0 +1,13 @@
+---
+- name: Success | Send success notify to Telegram
+  community.general.telegram:
+    token: "{{ telegram_token }}"
+    api_args:
+      chat_id: "{{ telegram_chat_id }}"
+      parse_mode: "HTML"
+      text: >
+        <b>[✅] Success ansible playbook run</b> on:
+
+        <b>{{ ansible_hostname }}</b> ({{ ansible_host }})
+      disable_web_page_preview: true
+      disable_notification: true

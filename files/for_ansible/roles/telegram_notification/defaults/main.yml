@@ -1,0 +1,7 @@
+---
+# defaults file for telegram_notification
+run: "[🕐] Start running"
+success: "[✅] Success"
+failure: "[❌] Failure"
+
+message: "{{ vars[status] }}"

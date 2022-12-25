@@ -1,0 +1,4 @@
+---
+# defaults file for jenkins_user
+user: jenkins
+password: jenkins
