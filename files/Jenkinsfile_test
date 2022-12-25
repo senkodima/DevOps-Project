@@ -84,35 +84,35 @@ pipeline {
                         echo "No such container $app_name"
                     }
                     sh (label: "Run container", 
-                        script: "docker run -dit --name $app_name -p 80:5000 --restart unless-stopped $image_name")
+                        script: "docker run -dit --name ${app_name} -p 80:5000 --restart unless-stopped ${image_name}")
                 }
             }
             post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
         }
-        stage('Run tests') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    for(String item: app_tests) {
-                        sh (label: "Run test: $item", 
-                            script: "docker run --rm $image_name $item")
-                    }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
-        stage('Push docker image') {
-            steps {
-                script {
-                    echo "This stage - '$STAGE_NAME'"
-                    docker.withRegistry('', "$dockerhub_cred_id") {
-                        docker_image.push()         // push with tag short sha commit
-                        docker_image.push('latest') // push with tag 'latest' 
-                    }
-                }
-            }
-            post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
-        }
+        // stage('Run tests') {
+        //     steps {
+        //         script {
+        //             echo "This stage - '$STAGE_NAME'"
+        //             for(String item: app_tests) {
+        //                 sh (label: "Run test: $item", 
+        //                     script: "docker run --rm $image_name $item")
+        //             }
+        //         }
+        //     }
+        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        // }
+        // stage('Push docker image') {
+        //     steps {
+        //         script {
+        //             echo "This stage - '$STAGE_NAME'"
+        //             docker.withRegistry('', "$dockerhub_cred_id") {
+        //                 docker_image.push()         // push with tag short sha commit
+        //                 docker_image.push('latest') // push with tag 'latest' 
+        //             }
+        //         }
+        //     }
+        //     post { failure { script { env.FAILURE_STAGE = "$STAGE_NAME" } } }
+        // }
         stage('Remove unnecessary local images') {
             steps {
                 script {
