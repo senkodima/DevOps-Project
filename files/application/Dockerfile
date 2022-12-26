@@ -6,7 +6,7 @@ RUN apk update && \
     apk add --no-cache bash && \
     apk add --no-cache tree
 
-# For pylint
+# Install pylint (-U, --upgrade)
 RUN pip install -U setuptools
 RUN pip install -U pylint
 
