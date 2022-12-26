@@ -71,6 +71,9 @@ https://github.com/HouariZegai/Calculator
 3. Подведение итогов😊
 ```
 
+## Infrastructure scheme
+![](./images/infrastructure_scheme.png)
+
 ## Example of creating ansible roles
 ```bash
 cd files/for_ansible/roles/
